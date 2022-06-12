@@ -6,6 +6,9 @@ import com.gyanendra.jpqlandnativesql.repository.StudentRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.test.annotation.Rollback;
 
 import javax.transaction.Transactional;
@@ -33,9 +36,11 @@ class JpqlandnativesqlApplicationTests {
         repository.save(student2);
 
     }
+    //Pagination and sorting.
     @Test
     public void testFindAllStudents(){
-        System.out.println(repository.findAllStudent());
+        System.out.println(repository.findAllStudent(PageRequest.of(0, 5))); //remember this point.
+        System.out.println(repository.findAllStudent(PageRequest.of(0, 5, Sort.Direction.DESC,"id"))); //remember this point.
     }
 
     @Test
@@ -62,6 +67,25 @@ class JpqlandnativesqlApplicationTests {
     @Rollback(false)
     public void testDeleteStudentsByFirstName(){
         repository.deleteStudentsByFirstName("Divyansh");
+    }
+
+    @Test
+    public void testFindAllStudentNQ(){
+        System.out.println(repository.findAllStudentNQ());
+    }
+
+    @Test
+    public void testFindByFirstNameNQ(){
+        System.out.println(repository.findByFirstNameNQ("Gyanendra"));
+    }
+
+    @Test
+    public void testFindAllStudentsPartialDataNQ(){
+        List<Object[]> partialData = repository.findAllStudentsPartialDataNQ();
+        for (Object[] objects: partialData){
+            System.out.println(objects[0]);
+            System.out.println(objects[1]);
+        }
     }
 
 }

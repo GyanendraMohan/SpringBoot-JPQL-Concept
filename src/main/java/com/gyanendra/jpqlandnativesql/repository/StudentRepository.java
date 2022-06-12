@@ -1,6 +1,7 @@
 package com.gyanendra.jpqlandnativesql.repository;
 
 import com.gyanendra.jpqlandnativesql.entities.Student;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
@@ -10,10 +11,9 @@ import java.util.List;
 
 public interface StudentRepository extends CrudRepository<Student,Long> {
     @Query("from Student ")
-    List<Student> findAllStudent();
+    List<Student> findAllStudent(Pageable pageable);
 
     //fetch partial information
-
     @Query("select st.firstName, st.lastName from Student st")
     List<Object[]> findAllStudentsPartialData();
 
@@ -26,4 +26,16 @@ public interface StudentRepository extends CrudRepository<Student,Long> {
     @Modifying
     @Query("delete from Student where firstName= :firstName")
     void deleteStudentsByFirstName(@Param("firstName") String firstName);
+
+    //working with the native sql.
+
+    @Query(value = "select * from student", nativeQuery = true)
+    List<Student> findAllStudentNQ();
+
+    @Query(value = "select * from student where fname= :firstName", nativeQuery = true)
+    List<Student> findByFirstNameNQ(@Param("firstName") String firstName);  //passing named parameter
+
+    @Query(value = "select st.fname, st.lname from student st", nativeQuery = true)
+    List<Object[]> findAllStudentsPartialDataNQ();
+
 }
